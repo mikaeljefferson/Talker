@@ -1,4 +1,5 @@
 const express = require('express');
+const { allTalkers } = require('./talker');
 
 const app = express();
 app.use(express.json());
@@ -13,4 +14,22 @@ app.get('/', (_request, response) => {
 
 app.listen(PORT, () => {
   console.log('Online');
+});
+app.get('/talker', async (req, res) => {
+  const talkers = await allTalkers();
+
+  if (!!talkers && talkers.length === 0) {
+    return res.status(200).json([]);
+  }
+
+  return res.status(200).json(talkers);
+});
+app.get('/talker/:id', async (req, res) => {
+  const { id: talkerId } = req.params;
+  const talkers = await allTalkers();
+  const talkerById = talkers.find(({ id }) => id === +talkerId);
+  if (!talkerById) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+  return res.status(200).json(talkerById);
 });
