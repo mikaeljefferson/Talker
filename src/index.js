@@ -1,5 +1,7 @@
 const express = require('express');
 const { allTalkers, randomToken } = require('./talker');
+const emailValidation = require('./middleware/validacao/emailValidation');
+const passwordValidation = require('./middleware/validacao/passwordValidation');
 
 const app = express();
 app.use(express.json());
@@ -36,8 +38,12 @@ app.get('/talker/:id', async (req, res) => {
   return res.status(200).json(talkerById);
 });
 // 3 - Crie o endpoint POST /login
-app.post('/login', (req, res) => {
-  const token = randomToken();
+// 4 - Adicione as validações para o endpoint /login
+app.post('/login',
+  emailValidation,
+  passwordValidation,
+  (req, res) => {
+    const token = randomToken();
 
-  return res.status(200).json({ token });
-});
+    return res.status(200).json({ token });
+  });
