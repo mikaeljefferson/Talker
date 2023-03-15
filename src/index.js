@@ -1,5 +1,5 @@
 const express = require('express');
-const { allTalkers } = require('./talker');
+const { allTalkers, randomToken } = require('./talker');
 
 const app = express();
 app.use(express.json());
@@ -15,6 +15,7 @@ app.get('/', (_request, response) => {
 app.listen(PORT, () => {
   console.log('Online');
 });
+// 1 - Crie o endpoint GET /talker
 app.get('/talker', async (req, res) => {
   const talkers = await allTalkers();
 
@@ -24,6 +25,7 @@ app.get('/talker', async (req, res) => {
 
   return res.status(200).json(talkers);
 });
+// 2 - Crie o endpoint GET /talker/:id
 app.get('/talker/:id', async (req, res) => {
   const { id: talkerId } = req.params;
   const talkers = await allTalkers();
@@ -32,4 +34,10 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
   return res.status(200).json(talkerById);
+});
+// 3 - Crie o endpoint POST /login
+app.post('/login', (req, res) => {
+  const token = randomToken();
+
+  return res.status(200).json({ token });
 });
