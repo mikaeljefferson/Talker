@@ -23,8 +23,23 @@ function randomToken() {
 
   return token;
 }
+async function writeTalkerFile(talker) {
+  try {
+    await fs.writeFile(talkerPath, talker);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+async function addTalker(talker) {
+  const file = await readTalkerFile();
+
+  file.push(talker);
+  await writeTalkerFile(JSON.stringify(file));
+}
 
 module.exports = {
   allTalkers,
   randomToken,
+  readTalkerFile,
+  addTalker,
 };

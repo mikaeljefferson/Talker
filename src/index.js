@@ -1,7 +1,13 @@
 const express = require('express');
-const { allTalkers, randomToken } = require('./talker');
+const { allTalkers, randomToken, addTalker, readTalkerFile } = require('./talker');
 const emailValidation = require('./middleware/validacao/emailValidation');
 const passwordValidation = require('./middleware/validacao/passwordValidation');
+const authorizationValidation = require('./middleware/validacao/authorizationValidation');
+const nameValidation = require('./middleware/validacao/nameValidation');
+const ageValidation = require('./middleware/validacao/ageValidation');
+const talkValidation = require('./middleware/validacao/talkValidation ');
+const watchedAtValidation = require('./middleware/validacao/ watchedAtValidation');
+const rateValidation = require('./middleware/validacao/rateValidation');
 
 const app = express();
 app.use(express.json());
@@ -46,4 +52,23 @@ app.post('/login',
     const token = randomToken();
 
     return res.status(200).json({ token });
+  });
+  // 5 - Crie o endpoint POST /talker
+  app.post('/talker',
+  authorizationValidation,
+  nameValidation,
+  ageValidation,
+  talkValidation,
+  watchedAtValidation,
+  rateValidation,
+  async (req, res) => {
+    const talker = req.body;
+
+    const file = await readTalkerFile();
+    const lastFile = file[file.length - 1];
+    const newTalker = { id: lastFile.id + 1, ...talker };
+
+    await addTalker(newTalker);
+
+    return res.status(201).json(newTalker);
   });
