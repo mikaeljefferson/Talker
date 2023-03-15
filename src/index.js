@@ -1,5 +1,8 @@
 const express = require('express');
-const { allTalkers, randomToken, addTalker, readTalkerFile } = require('./talker');
+const { allTalkers, randomToken,
+   addTalker,
+    readTalkerFile,
+    updateTalker } = require('./talker');
 const emailValidation = require('./middleware/validacao/emailValidation');
 const passwordValidation = require('./middleware/validacao/passwordValidation');
 const authorizationValidation = require('./middleware/validacao/authorizationValidation');
@@ -71,4 +74,24 @@ app.post('/login',
     await addTalker(newTalker);
 
     return res.status(201).json(newTalker);
+  });
+  // 6 - Crie o endpoint PUT /talker/:id
+  app.put('/talker/:id',
+  authorizationValidation,
+  nameValidation,
+  ageValidation,
+  talkValidation,
+  watchedAtValidation,
+  rateValidation,
+  async (req, res) => {
+    const { id } = req.params;
+    const talker = req.body;
+
+    const updatedTalker = await updateTalker(talker, Number(id));
+
+    if (!updatedTalker) {
+      return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    }
+
+    return res.status(200).json(updatedTalker);
   });
