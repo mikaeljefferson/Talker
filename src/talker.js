@@ -51,6 +51,12 @@ async function updateTalker(object, id) {
 
   return findTalker;
 }
+async function deleteTalker(id) {
+  const file = await readTalkerFile();
+  const filterFile = file.filter((item) => item.id !== id);
+
+  await writeTalkerFile(JSON.stringify(filterFile));
+}
 
 module.exports = {
   allTalkers,
@@ -58,4 +64,5 @@ module.exports = {
   readTalkerFile,
   addTalker,
   updateTalker,
+  deleteTalker,
 };

@@ -2,7 +2,8 @@ const express = require('express');
 const { allTalkers, randomToken,
    addTalker,
     readTalkerFile,
-    updateTalker } = require('./talker');
+    updateTalker,
+    deleteTalker } = require('./talker');
 const emailValidation = require('./middleware/validacao/emailValidation');
 const passwordValidation = require('./middleware/validacao/passwordValidation');
 const authorizationValidation = require('./middleware/validacao/authorizationValidation');
@@ -94,4 +95,12 @@ app.post('/login',
     }
 
     return res.status(200).json(updatedTalker);
+  });
+  // 7 - Crie o endpoint DELETE /talker/:id
+  app.delete('/talker/:id', authorizationValidation, async (req, res) => {
+    const { id } = req.params;
+  
+    await deleteTalker(Number(id));
+  
+    return res.status(204).end();
   });
